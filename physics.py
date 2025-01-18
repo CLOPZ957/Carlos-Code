@@ -1,12 +1,17 @@
-#
-# Copyright (c) FIRST and other WPILib contributors.
-# Open Source Software; you can modify and/or share it under the terms of
-# the WPILib BSD license file in the root directory of this project.
-#
 
 #
-# See the notes for the other physics sample
+# See the documentation for more details on how this works
 #
+# Documentation can be found at https://robotpy.readthedocs.io/projects/pyfrc/en/latest/physics.html
+#
+# The idea here is you provide a simulation object that overrides specific
+# pieces of WPILib, and modifies motors/sensors accordingly depending on the
+# state of the simulation. An example of this would be measuring a motor
+# moving for a set period of time, and then changing a limit switch to turn
+# on after that period of time. This can help you do more complex simulations
+# of your robot code without too much extra effort.
+#
+# Examples can be found at https://github.com/robotpy/examples
 
 import wpilib.simulation
 
@@ -36,13 +41,13 @@ class PhysicsEngine:
 
         # Motors
         self.lf_motor = wpilib.simulation.PWMSim(robot.lf_motor.getChannel())
-        #self.lr_motor = wpilib.simulation.PWMSim(robot.lr_motor.getChannel())
+        # self.lr_motor = wpilib.simulation.PWMSim(robot.lr_motor.getChannel())
 
         self.rf_motor = wpilib.simulation.PWMSim(robot.rf_motor.getChannel())
-        #self.rr_motor = wpilib.simulation.PWMSim(robot.rr_motor.getChannel())
+        # self.rr_motor = wpilib.simulation.PWMSim(robot.rr_motor.getChannel())
 
         # Gyro
-        self.gyro = wpilib.simulation.AnalogGyroSim(robot.gyro)
+        #self.gyro = wpilib.simulation.AnalogGyroSim(robot.gyro)
 
         # Change these parameters to fit your robot!
         bumper_width = 3.25 * units.inch
@@ -64,7 +69,7 @@ class PhysicsEngine:
         """
         Called when the simulation parameters for the program need to be
         updated.
-   
+
         :param now: The current time as a float
         :param tm_diff: The amount of time that has passed since the last
                         time that this function was called
@@ -75,10 +80,5 @@ class PhysicsEngine:
         rf_motor = self.rf_motor.getSpeed()
 
         transform = self.drivetrain.calculate(lf_motor, rf_motor, tm_diff)
-        transform = self.drivetrain.calculate(lf_motor, rf_motor, now)
         pose = self.physics_controller.move_robot(transform)
 
-        # Update the gyro simulation
-        # -> FRC gyros are positive clockwise, but the returned pose is positive
-        #    counter-clockwise
-        self.gyro.setAngle(-pose.rotation().degrees())
